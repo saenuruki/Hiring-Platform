@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import type { Job } from "../../page"
 
 interface FormData {
   title: string
@@ -45,7 +46,6 @@ export default function CreateJob() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Check if file is PDF
     if (file.type !== "application/pdf") {
       toast.error("Please upload a PDF file")
       return
@@ -74,7 +74,6 @@ export default function CreateJob() {
         throw new Error(data.error || data.details || "Failed to parse PDF")
       }
 
-      // Validate the response data
       if (!data || typeof data !== "object") {
         throw new Error("Invalid response data")
       }
@@ -109,8 +108,24 @@ export default function CreateJob() {
     setIsLoading(true)
 
     try {
-      // Here you would typically send the data to your backend API
-      console.log("Submitted:", formData)
+      const existingJobs = localStorage.getItem("jobs")
+      const jobs: Job[] = existingJobs ? JSON.parse(existingJobs) : []
+
+      const newJob: Job = {
+        id: Math.max(0, ...jobs.map((job) => job.id)) + 1,
+        title: formData.title,
+        company: formData.company,
+        location: formData.location,
+        overview: formData.overview,
+        keyResponsibilities: formData.keyResponsibilities.split("\n").filter(Boolean),
+        qualifications: formData.qualifications.split("\n").filter(Boolean),
+        skills: formData.skills.split("\n").filter(Boolean),
+        additionalSkills: formData.additionalSkills.split("\n").filter(Boolean),
+      }
+
+      const updatedJobs = [...jobs, newJob]
+      localStorage.setItem("jobs", JSON.stringify(updatedJobs))
+
       toast.success("Job listing created successfully")
       router.push("/")
     } catch (error) {
@@ -229,7 +244,7 @@ export default function CreateJob() {
               />
             </div>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Processing..." : "Create Job Listing"}
+              {isLoading ? "Creating..." : "Create Job Listing"}
             </Button>
           </form>
         </CardContent>

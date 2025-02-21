@@ -6,93 +6,8 @@ import { useParams } from "next/navigation"
 import { useTransition, animated } from "react-spring"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { Job } from "../../page"
 
-// Mock job data (unchanged)
-const jobs = [
-  {
-    id: "1",
-    title: "Software Engineer",
-    company: "Tech Corp",
-    location: "Tokyo",
-    overview: "We are seeking a talented Software Engineer to join our innovative team...",
-    keyResponsibilities: [
-      "Develop and maintain high-quality software",
-      "Collaborate with cross-functional teams",
-      "Participate in code reviews and contribute to best practices",
-    ],
-    qualifications: [
-      "Bachelor's degree in Computer Science or related field",
-      "3+ years of software development experience",
-      "Strong problem-solving skills",
-    ],
-    skills: [
-      "Proficiency in JavaScript, Python, or Java",
-      "Experience with modern web frameworks (e.g., React, Vue, Angular)",
-      "Familiarity with cloud platforms (AWS, Azure, or GCP)",
-    ],
-    additionalSkills: [
-      "Experience with microservices architecture",
-      "Knowledge of DevOps practices",
-      "Contributions to open-source projects",
-    ],
-  },
-  {
-    id: "2",
-    title: "Product Manager",
-    company: "Innovation Inc",
-    location: "Osaka",
-    overview: "We're looking for a dynamic Product Manager to lead the development of our next-generation products...",
-    keyResponsibilities: [
-      "Define product vision, strategy, and roadmap",
-      "Conduct market research and analyze user feedback",
-      "Collaborate with engineering, design, and marketing teams",
-      "Prioritize features and manage product backlog",
-    ],
-    qualifications: [
-      "Bachelor's degree in Business, Computer Science, or related field",
-      "5+ years of product management experience",
-      "Strong analytical and problem-solving skills",
-    ],
-    skills: [
-      "Excellent communication and leadership abilities",
-      "Experience with Agile/Scrum methodologies",
-      "Proficiency in product management tools (e.g., Jira, Trello)",
-    ],
-    additionalSkills: [
-      "MBA or advanced degree",
-      "Technical background or experience in software development",
-      "Experience in data analysis and A/B testing",
-    ],
-  },
-  {
-    id: "3",
-    title: "UX Designer",
-    company: "Creative Lab",
-    location: "Fukuoka",
-    overview: "Join our team as a UX Designer to create intuitive and engaging user experiences for our digital products...",
-    keyResponsibilities: [
-      "Conduct user research and usability testing",
-      "Create wireframes, prototypes, and high-fidelity designs",
-      "Collaborate with product managers and developers",
-      "Develop and maintain design systems",
-    ],
-    qualifications: [
-      "Bachelor's degree in Design, HCI, or related field",
-      "3+ years of UX design experience",
-      "Strong portfolio demonstrating UX/UI design skills",
-    ],
-    skills: [
-      "Proficiency in design tools (e.g., Figma, Sketch, Adobe XD)",
-      "Knowledge of user-centered design principles",
-      "Experience with interaction design and information architecture",
-    ],
-    additionalSkills: [
-      "Familiarity with front-end technologies (HTML, CSS, JavaScript)",
-      "Experience with motion design and prototyping",
-      "Knowledge of accessibility standards and best practices",
-    ],
-  },
-]
 
 // Function to generate a random applicant (unchanged)
 const generateRandomApplicant = () => {
@@ -113,8 +28,8 @@ interface Applicant {
 }
 
 export default function JobDetail() {
-  const { id } = useParams()
-  const job = jobs.find((j) => j.id === id)
+  const params = useParams()
+  const [job, setJob] = useState<Job | null>(null)
   const [applicants, setApplicants] = useState<Applicant[]>([
     { id: "1", name: "John Doe", experience: "5 years" },
     { id: "2", name: "Jane Smith", experience: "3 years" },
@@ -133,6 +48,16 @@ export default function JobDetail() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    const jobId = Number.parseInt(params.id as string, 10)
+    const savedJobs = localStorage.getItem("jobs")
+    if (savedJobs) {
+      const jobs: Job[] = JSON.parse(savedJobs)
+      const foundJob = jobs.find((j) => j.id === jobId)
+      setJob(foundJob || null)
+    }
+  }, [params.id])
+
   const transitions = useTransition(applicants, {
     from: { opacity: 0, transform: "scale(0.8)" },
     enter: { opacity: 1, transform: "scale(1)" },
@@ -141,58 +66,74 @@ export default function JobDetail() {
   })
 
   if (!job) {
-    return <div>Job not found</div>
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Job Not Found</h1>
+        <p>The job you're looking for doesn't exist or has been removed.</p>
+        <Link href="/">
+          <Button className="mt-4">Back to Job Listings</Button>
+        </Link>
+      </div>
+    )
   }
 
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">{job.title}</h1>
-      <Card className="mb-8">
+      <Card>
         <CardHeader>
-          <CardTitle>Job Details</CardTitle>
+          <CardTitle>{job.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-2">
-            <strong>Company:</strong> {job.company}
-          </p>
-          <p className="mb-2">
-            <strong>Location:</strong> {job.location}
-          </p>
-          <p className="mb-4">
-            <strong>Overview:</strong> {job.overview}
-          </p>
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold mb-2">Key Responsibilities:</h3>
-            <ul className="list-disc pl-5">
-              {job.keyResponsibilities.map((resp, index) => (
-                <li key={index}>{resp}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold mb-2">Qualifications:</h3>
-            <ul className="list-disc pl-5">
-              {job.qualifications.map((qual, index) => (
-                <li key={index}>{qual}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold mb-2">Skills:</h3>
-            <ul className="list-disc pl-5">
-              {job.skills.map((skill, index) => (
-                <li key={index}>{skill}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2">Additional Skills (Desirable):</h3>
-            <ul className="list-disc pl-5">
-              {job.additionalSkills.map((skill, index) => (
-                <li key={index}>{skill}</li>
-              ))}
-            </ul>
-          </div>
+          <p className="text-lg font-semibold">{job.company}</p>
+          <p className="text-md text-muted-foreground mb-4">{job.location}</p>
+
+          <h2 className="text-xl font-semibold mt-4 mb-2">Overview</h2>
+          <p>{job.overview || job.description}</p>
+
+          {job.keyResponsibilities && job.keyResponsibilities.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mt-4 mb-2">Key Responsibilities</h2>
+              <ul className="list-disc pl-5">
+                {job.keyResponsibilities.map((resp, index) => (
+                  <li key={index}>{resp}</li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {job.qualifications && job.qualifications.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mt-4 mb-2">Qualifications</h2>
+              <ul className="list-disc pl-5">
+                {job.qualifications.map((qual, index) => (
+                  <li key={index}>{qual}</li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {job.skills && job.skills.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mt-4 mb-2">Required Skills</h2>
+              <ul className="list-disc pl-5">
+                {job.skills.map((skill, index) => (
+                  <li key={index}>{skill}</li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {job.additionalSkills && job.additionalSkills.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mt-4 mb-2">Additional Skills</h2>
+              <ul className="list-disc pl-5">
+                {job.additionalSkills.map((skill, index) => (
+                  <li key={index}>{skill}</li>
+                ))}
+              </ul>
+            </>
+          )}
         </CardContent>
       </Card>
 

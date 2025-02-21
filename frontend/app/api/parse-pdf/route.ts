@@ -3,21 +3,25 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as pdfjsLib from "pdfjs-dist"
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
+// Configure for Node.js environment
+export const runtime = "nodejs"
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
-async function extractTextFromPDF(pdfData: ArrayBuffer): Promise<string> {
+async function extractTextFromPDF(pdfData: Uint8Array): Promise<string> {
   console.log("Entering extractTextFromPDF function")
   try {
-    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise
+    // Initialize pdf.js without worker
+    const loadingTask = pdfjsLib.getDocument({
+      data: pdfData,
+      useWorkerFetch: false,
+      isEvalSupported: false,
+      useSystemFonts: true,
+    })
+
+    const pdf = await loadingTask.promise
     console.log(`PDF loaded successfully. Number of pages: ${pdf.numPages}`)
+
     let text = ""
     for (let i = 1; i <= pdf.numPages; i++) {
       console.log(`Processing page ${i}`)
@@ -64,10 +68,10 @@ export async function POST(req: NextRequest) {
     console.log("Starting PDF parsing")
     console.log("File size:", file.size)
 
-    let fileBuffer: ArrayBuffer
+    let fileBuffer: Uint8Array
     try {
       const arrayBuffer = await file.arrayBuffer()
-      fileBuffer = Buffer.from(arrayBuffer)
+      fileBuffer = new Uint8Array(arrayBuffer)
       console.log("File buffer created, size:", fileBuffer.byteLength)
     } catch (error) {
       console.error("Error reading file:", error)
@@ -182,3 +186,4 @@ export async function POST(req: NextRequest) {
     )
   }
 }
+
