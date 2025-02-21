@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import Navbar from "@/components/navbar"
 
 // More comprehensive job data
 const jobs = [
@@ -45,6 +46,7 @@ const jobs = [
 export default function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
+      <Navbar />
       <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {jobs.map((job) => (
