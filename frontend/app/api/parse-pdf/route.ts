@@ -15,17 +15,20 @@ export async function POST(req: NextRequest) {
     const fileContent = Buffer.from(fileBuffer).toString("base64")
 
     const prompt = `
-      以下は求人情報が含まれるPDFファイルの内容です。この情報から以下の項目を抽出してください：
-      - 職種（title）
-      - 会社名（company）
-      - 勤務地（location）
-      - 職務内容（description）
-      - 応募要件（requirements）
+      The following is the content of a PDF file containing job description information. Please extract the following items:
+      - Title
+      - Company Name
+      - Location
+      - Overview
+      - Key Responsibilities
+      - Qualifications
+      - Skills
+      - Additional Skills (Desirable)
 
-      PDFの内容：
+      PDF content:
       ${fileContent}
 
-      抽出した情報をJSON形式で返してください。
+      Please return the extracted information in JSON format, using the exact field names provided above.
     `
 
     const { text } = await generateText({

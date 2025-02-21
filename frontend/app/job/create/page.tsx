@@ -16,8 +16,11 @@ export default function CreateJob() {
     title: "",
     company: "",
     location: "",
-    description: "",
-    requirements: "",
+    overview: "",
+    keyResponsibilities: "",
+    qualifications: "",
+    skills: "",
+    additionalSkills: "",
   })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -42,7 +45,7 @@ export default function CreateJob() {
       })
 
       if (!response.ok) {
-        throw new Error("PDF解析に失敗しました")
+        throw new Error("Failed to parse PDF")
       }
 
       const data = await response.json()
@@ -52,7 +55,7 @@ export default function CreateJob() {
       }))
     } catch (error) {
       console.error("Error:", error)
-      alert("PDFの解析中にエラーが発生しました")
+      alert("An error occurred while parsing the PDF")
     } finally {
       setIsLoading(false)
     }
@@ -60,58 +63,76 @@ export default function CreateJob() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // ここで求人データを保存するAPIを呼び出す
+    // Here you would typically send the data to your backend API
     console.log("Submitted:", formData)
+    // For now, we'll just redirect to the home page
     router.push("/")
   }
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">新しい求人を作成</h1>
+      <h1 className="text-3xl font-bold mb-6">Create New Job Listing</h1>
       <Card>
         <CardHeader>
-          <CardTitle>求人情報入力</CardTitle>
+          <CardTitle>Job Information</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="title">職種</Label>
+              <Label htmlFor="pdf-upload">Upload PDF (Optional)</Label>
+              <Input id="pdf-upload" type="file" accept=".pdf" onChange={handleFileUpload} disabled={isLoading} />
+            </div>
+            <div>
+              <Label htmlFor="title">Title</Label>
               <Input id="title" name="title" value={formData.title} onChange={handleInputChange} required />
             </div>
             <div>
-              <Label htmlFor="company">会社名</Label>
+              <Label htmlFor="company">Company Name</Label>
               <Input id="company" name="company" value={formData.company} onChange={handleInputChange} required />
             </div>
             <div>
-              <Label htmlFor="location">勤務地</Label>
+              <Label htmlFor="location">Location</Label>
               <Input id="location" name="location" value={formData.location} onChange={handleInputChange} required />
             </div>
             <div>
-              <Label htmlFor="description">職務内容</Label>
+              <Label htmlFor="overview">Overview</Label>
+              <Textarea id="overview" name="overview" value={formData.overview} onChange={handleInputChange} required />
+            </div>
+            <div>
+              <Label htmlFor="keyResponsibilities">Key Responsibilities</Label>
               <Textarea
-                id="description"
-                name="description"
-                value={formData.description}
+                id="keyResponsibilities"
+                name="keyResponsibilities"
+                value={formData.keyResponsibilities}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div>
-              <Label htmlFor="requirements">応募要件</Label>
+              <Label htmlFor="qualifications">Qualifications</Label>
               <Textarea
-                id="requirements"
-                name="requirements"
-                value={formData.requirements}
+                id="qualifications"
+                name="qualifications"
+                value={formData.qualifications}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div>
-              <Label htmlFor="pdf-upload">PDFアップロード（自動補完）</Label>
-              <Input id="pdf-upload" type="file" accept=".pdf" onChange={handleFileUpload} disabled={isLoading} />
+              <Label htmlFor="skills">Skills</Label>
+              <Textarea id="skills" name="skills" value={formData.skills} onChange={handleInputChange} required />
+            </div>
+            <div>
+              <Label htmlFor="additionalSkills">Additional Skills (Desirable)</Label>
+              <Textarea
+                id="additionalSkills"
+                name="additionalSkills"
+                value={formData.additionalSkills}
+                onChange={handleInputChange}
+              />
             </div>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "処理中..." : "求人を作成"}
+              {isLoading ? "Processing..." : "Create Job Listing"}
             </Button>
           </form>
         </CardContent>
