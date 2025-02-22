@@ -1,17 +1,26 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PhantomWalletName } from "@solana/wallet-adapter-wallets";
+import { useTaskContext } from "./task-provider";
 
 export default function Navbar() {
   const { connected, select } = useWallet();
-  const [connecting, setConnecting] = React.useState(false);
+  const [connecting, setConnecting] = useState(false);
+
+  const { user, initialized, initUser } = useTaskContext();
 
   const connectHandler = () => {
     setConnecting(true);
     select(PhantomWalletName);
   };
+
+  useEffect(() => {
+    if (user) {
+      setConnecting(false);
+    }
+  }, [user]);
 
   return (
     <nav>
@@ -24,11 +33,18 @@ export default function Navbar() {
         </li>
         {connected && (
           <li className="flex items-center space-x-2">
-            <img
-              src="https://avatars.githubusercontent.com/u/7525670?v=4"
-              className="h-8 w-8 rounded-full"
-            />
-            <span>User</span>
+            <img src={user?.avatar} className="h-8 w-8 rounded-full" />
+            <span>{user?.name}</span>
+            {!initialized && (
+              <button
+                className="ml-3 mr-2"
+                onClick={() => {
+                  initUser();
+                }}
+              >
+                Initialize User
+              </button>
+            )}
           </li>
         )}
         {!connected && (

@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TaskContextProvider } from "@/components/task-provider";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -17,7 +18,7 @@ export function Providers({ children }) {
     // <ThemeProvider>
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
-        {children}
+        <TaskContextProvider>{children}</TaskContextProvider>
       </WalletProvider>
     </ConnectionProvider>
     // </ThemeProvider>
