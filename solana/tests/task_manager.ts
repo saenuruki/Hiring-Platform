@@ -9,15 +9,18 @@ describe("program", () => {
   const provider = anchor.AnchorProvider.local();
   anchor.setProvider(provider);
 
+  // Dummy task informations
   const taskAccount1 = anchor.web3.Keypair.generate();
-  const taskAccount2 = anchor.web3.Keypair.generate();
+  const taskId1 = 'a-random-task-id-1';
+
   const creator = provider.wallet as anchor.Wallet;
+  const solver = provider.wallet as anchor.Wallet;
 
   const program = anchor.workspace.TaskManager as Program<TaskManager>;
 
   it("Creates a task!", async () => {
     await program.methods
-      .addTask('a-random-task-id-1', 'ipfs-hash', new BN(20000))
+      .addTask(taskId1, 'ipfs-hash')
       .accounts({
         task: taskAccount1.publicKey, 
         creator: creator.publicKey,
@@ -25,9 +28,28 @@ describe("program", () => {
       .signers([taskAccount1])
       .rpc();
     
-      const allTasks = await program.account.task.fetch(taskAccount1.publicKey);
-      assert.ok(allTasks.taskId === 'a-random-task-id-1');
-      assert.ok(allTasks.ipfsHash === 'ipfs-hash');
-      assert.ok(allTasks.cost.eq(new BN(20000)));
+      const addedTask = await program.account.task.fetch(taskAccount1.publicKey);
+      assert.ok(addedTask.taskId === taskId1);
+      assert.ok(addedTask.ipfsHash === 'ipfs-hash');
+  });
+
+  it("Applies to a task!", async () => {
+    const offerId = "random-offer-id";
+    const offerAccount = anchor.web3.Keypair.generate();
+    await program.methods
+      .applyToTask(taskId1, offerId, new BN(20000))
+      .accounts({
+        offer: offerAccount.publicKey, 
+        task: taskAccount1.publicKey,
+        creator: solver.publicKey,
+      })
+      .signers([offerAccount])
+      .rpc();
+    
+      const appliedOffer = await program.account.offer.fetch(offerAccount.publicKey);
+      console.log(appliedOffer);
+      assert.ok(appliedOffer.taskId == taskId1);
+      assert.ok(appliedOffer.offerId == offerId);
+      assert.ok(appliedOffer.amount.cmp(new BN(20000)) == 0);
   });
 });
