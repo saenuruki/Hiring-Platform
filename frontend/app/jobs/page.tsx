@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { NavBar } from "@/components/nav-bar"
 
 export interface Job {
   id: number;
@@ -112,27 +111,30 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-        <NavBar />
-        <main className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {jobs.map((job) => (
-                <Card key={job.id}>
-                    <CardHeader>
-                    <CardTitle>{job.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                    <p className="text-sm text-muted-foreground">{job.description}</p>
-                    </CardContent>
-                    <CardFooter>
-                    <Link href={`/job/${job.id}`}>
-                        <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">View Details</Button>
-                    </Link>
-                    </CardFooter>
-                </Card>
-                ))}
-            </div>
-        </main>
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {jobs.map((job) => (
+            <Card key={job.id}>
+              <CardHeader>
+                <CardTitle>{job.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  {job.description}
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Link href={`/job/${job.id}`}>
+                  <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
+                    View Details
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }

@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useState, useEffect } from "react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PhantomWalletName } from "@solana/wallet-adapter-wallets";
 import { useTaskContext } from "./task-provider";
 import Image from "next/image";
 
-export function NavBar() {
-  const [isScrolled, setIsScrolled] = useState(false)
+export default function NavBar() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const { connected, select } = useWallet();
   const [connecting, setConnecting] = useState(false);
 
@@ -17,28 +17,30 @@ export function NavBar() {
 
   const handleScroll = () => {
     if (window.scrollY > 0) {
-      setIsScrolled(true)
+      setIsScrolled(true);
     } else {
-      setIsScrolled(false)
+      setIsScrolled(false);
     }
-  }
+  };
 
   const connectHandler = () => {
-      setConnecting(true);
-      select(PhantomWalletName);
+    setConnecting(true);
+    select(PhantomWalletName);
   };
 
   useEffect(() => {
     if (user) {
       setConnecting(false);
     }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [user]);
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 bg-white z-50 transition-shadow duration-200 ${isScrolled ? "shadow-md" : ""}`}
+      className={`fixed top-0 left-0 right-0 bg-white z-50 transition-shadow duration-200 ${
+        isScrolled ? "shadow-md" : ""
+      }`}
     >
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
@@ -48,40 +50,52 @@ export function NavBar() {
             width={150}
             height={40}
             priority
-            className="h-8 w-auto"
+            className="h-8 w-auto object-contain object-left -ml-2"
           />
         </Link>
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-black hover:text-[#7C3AED]">
-            Home
-          </Link>
-          <Link href="/about" className="text-black hover:text-[#7C3AED]">
+          <Link
+            href="/about"
+            className="text-black hover:text-[#7C3AED] whitespace-nowrap text-sm"
+          >
             About Us
           </Link>
           {connected && (
-          <li className="flex items-center space-x-2">
-            <button
-                className="ml-3 mr-2"
+            <li className="flex items-center space-x-2">
+              <button
                 onClick={() => {
                   initUser();
                 }}
-            >
-                <img src={user?.avatar} className="h-8 w-8 rounded-full" />
-            </button>
-            <Link href="/job/create" className="text-black hover:text-[#7C3AED]">
-                <Button variant="outline" className="border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-full">
-                    Create Job
+              >
+                <img
+                  src={user?.avatar}
+                  className="h-10 w-10 rounded-full border"
+                />
+              </button>
+              <Link
+                href="/job/create"
+                className="text-black hover:text-[#7C3AED]"
+              >
+                <Button
+                  variant="outline"
+                  className="border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-full"
+                >
+                  Create Job
                 </Button>
-            </Link>
-          </li>
-        )}
-        {!connected && (
-            <Button onClick={connectHandler} variant="outline" className="border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-full">
-                Login
+              </Link>
+            </li>
+          )}
+          {!connected && (
+            <Button
+              onClick={connectHandler}
+              variant="outline"
+              className="border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-full"
+            >
+              Login
             </Button>
-        )}
+          )}
         </div>
       </div>
     </nav>
-  )
+  );
 }

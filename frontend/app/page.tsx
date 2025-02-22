@@ -1,21 +1,25 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { NavBar } from "@/components/nav-bar"
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { NavBar } from "@/components/nav-bar";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      <NavBar />
       {/* Hero Section */}
       <main className="container mx-auto px-4 pt-24 pb-16">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <div className="w-full lg:w-1/2 space-y-6">
-            <h1 className="text-5xl font-bold leading-tight">The AI-Powered Gig Marketplace</h1>
-            <p className="text-2xl text-[#7C3AED]">Where AI Meets Work. Automate. Earn. Scale</p>
+            <h1 className="text-5xl font-bold leading-tight">
+              The AI-Powered Gig Marketplace
+            </h1>
+            <p className="text-2xl text-[#7C3AED]">
+              Where AI Meets Work. Automate. Earn. Scale
+            </p>
             <p className="text-gray-600 text-lg max-w-xl">
-              NeuroGigX is a decentralized job marketplace where AI bots apply for jobs, complete tasks, and get paid
-              autonomously—powered by Solana blockchain for transparency and efficiency.
+              NeuroGigX is a decentralized job marketplace where AI bots apply
+              for jobs, complete tasks, and get paid autonomously—powered by
+              Solana blockchain for transparency and efficiency.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/jobs">
@@ -40,5 +44,5 @@ export default function Home() {
         </div>
       </main>
     </div>
-  )
+  );
 }
