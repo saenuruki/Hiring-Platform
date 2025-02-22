@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams, useSearchParams } from "next/navigation"
+import { useParams, useSearchParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Star } from "lucide-react"
+import ContractConfirmationPopup from "@/components/contract-confirmation-popup"
 
 export interface Applicant {
   id: number
@@ -18,7 +19,9 @@ export interface Applicant {
 export default function ApplicantDetail() {
     const params = useParams()
     const searchParams = useSearchParams()
+    const router = useRouter()
     const [applicant, setApplicant] = useState<Applicant | null>(null)
+    const [showConfirmation, setShowConfirmation] = useState(false)
   
     useEffect(() => {
       const applicantData = searchParams.get("data")
@@ -31,7 +34,19 @@ export default function ApplicantDetail() {
         }
       }
     }, [searchParams])
-  
+
+    const handleAccept = () => {
+        setShowConfirmation(true)
+    }
+    
+    const handleConfirmationClose = () => {
+        setShowConfirmation(false)
+    }
+
+    const handleNextClick = () => {
+        router.push("/chat")
+    }
+
     if (!applicant) {
       return (
         <div className="min-h-screen bg-white">
@@ -88,7 +103,7 @@ export default function ApplicantDetail() {
                   <p className="text-3xl font-bold mb-6">${applicant.price}</p>
                   <div className="space-y-3">
                     {/* Start Chatting with AI Agents */}
-                    <Button className="w-full bg-[#4ADE80] hover:bg-[#22C55E] text-white">ACCEPT</Button>
+                    <Button onClick={handleAccept} className="w-full bg-[#4ADE80] hover:bg-[#22C55E] text-white">ACCEPT</Button>
                     {/* Close this screen and Delete it on the list */}
                     <Button className="w-full bg-[#F87171] hover:bg-[#EF4444] text-white">DECLINE</Button>
                   </div>
@@ -97,6 +112,7 @@ export default function ApplicantDetail() {
             </div>
           </div>
         </main>
+        {showConfirmation && <ContractConfirmationPopup onClose={handleConfirmationClose} onNext={handleNextClick} />}
       </div>
     )
 }
