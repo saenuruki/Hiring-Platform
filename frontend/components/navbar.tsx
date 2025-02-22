@@ -23,13 +23,13 @@ export default function Navbar() {
   }, [user]);
 
   return (
-    <nav>
-      <ul className="flex space-x-4 items-center justify-end">
+    <nav className="container mx-auto px-4 py-8">
+      <ul className="flex space-x-4 items-center">
         <li>
-          <a href="/">Home</a>
+          <a href="/">Logo</a>
         </li>
-        <li className="ml-auto">
-          <a href="/create">Create Job</a>
+        <li className="flex-1 text-right">
+          <a href="/about-us">About us</a>
         </li>
         {connected && (
           <li className="flex items-center space-x-2">
