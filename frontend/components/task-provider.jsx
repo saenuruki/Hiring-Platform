@@ -62,14 +62,15 @@ export const TaskContextProvider = ({ children }) => {
     }
   };
 
-  const createTask = async (hash) => {
+  const createTask = async (title, hash) => {
     if (program && publicKey) {
       try {
         setTransactionPending(true);
         const taskAccount1 = anchor.web3.Keypair.generate();
+        console.log(taskAccount1.publicKey.toBase58());
 
         await program.methods
-          .addTask("a-random-task-id-1", hash)
+          .addTask(title, hash)
           .accounts({
             task: taskAccount1.publicKey,
             creator: publicKey,

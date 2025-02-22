@@ -117,9 +117,9 @@ export default function Home() {
         <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {tasks.map((task: any) => (
-            <Card key={task.publicKey}>
+            <Card key={task.account.taskId}>
               <CardHeader>
-                <CardTitle>{task.publicKey}</CardTitle>
+                <CardTitle>{task.account.taskId}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
@@ -127,7 +127,7 @@ export default function Home() {
                 </p>
               </CardContent>
               <CardFooter>
-                <Link href={`/job/${task.publicKey}`}>
+                <Link href={`/job/${task.account.taskId}`}>
                   <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
                     View Details
                   </Button>

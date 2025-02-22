@@ -98,15 +98,23 @@ export default function CreateJob() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    // upload the data to IPFS
-    const hash = await createIpfs(formData);
+      // upload the data to IPFS
+      const hash = await createIpfs(formData);
 
-    // create Smart Contract
-    const res2 = await createTask(hash);
-
-    console.log(res2);
+      // create Smart Contract
+      const res2 = await createTask(formData.title, hash);
+      console.log(res2);
+      toast.success("Task listing created successfully");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to create task listing");
+    } finally {
+      setIsLoading(false);
+      router.push("/jobs");
+    }
 
     // try {
     //   const existingJobs = localStorage.getItem("jobs");
