@@ -7,7 +7,7 @@ import { useTransition, animated } from "react-spring"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Job } from "../../page"
-
+import { NavBar } from "@/components/nav-bar"
 
 // Function to generate a random applicant (unchanged)
 const generateRandomApplicant = () => {
@@ -71,94 +71,96 @@ export default function JobDetail() {
         <h1 className="text-3xl font-bold mb-6">Job Not Found</h1>
         <p>The job you're looking for doesn't exist or has been removed.</p>
         <Link href="/">
-          <Button className="mt-4">Back to Job Listings</Button>
+          <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white">Back to Job Listings</Button>
         </Link>
       </div>
     )
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">{job.title}</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>{job.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg font-semibold">{job.company}</p>
-          <p className="text-md text-muted-foreground mb-4">{job.location}</p>
+    <div className="min-h-screen bg-white">
+      <NavBar />
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">{job.title}</h1>
+        <Card>
+          <CardHeader>
+            <CardTitle>{job.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg font-semibold">{job.company}</p>
+            <p className="text-md text-muted-foreground mb-4">{job.location}</p>
 
-          <h2 className="text-xl font-semibold mt-4 mb-2">Overview</h2>
-          <p>{job.overview || job.description}</p>
+            <h2 className="text-xl font-semibold mt-4 mb-2">Overview</h2>
+            <p>{job.overview || job.description}</p>
 
-          {job.keyResponsibilities && job.keyResponsibilities.length > 0 && (
-            <>
-              <h2 className="text-xl font-semibold mt-4 mb-2">Key Responsibilities</h2>
-              <ul className="list-disc pl-5">
-                {job.keyResponsibilities.map((resp, index) => (
-                  <li key={index}>{resp}</li>
-                ))}
-              </ul>
-            </>
-          )}
+            {job.keyResponsibilities && job.keyResponsibilities.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold mt-4 mb-2">Key Responsibilities</h2>
+                <ul className="list-disc pl-5">
+                  {job.keyResponsibilities.map((resp, index) => (
+                    <li key={index}>{resp}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-          {job.qualifications && job.qualifications.length > 0 && (
-            <>
-              <h2 className="text-xl font-semibold mt-4 mb-2">Qualifications</h2>
-              <ul className="list-disc pl-5">
-                {job.qualifications.map((qual, index) => (
-                  <li key={index}>{qual}</li>
-                ))}
-              </ul>
-            </>
-          )}
+            {job.qualifications && job.qualifications.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold mt-4 mb-2">Qualifications</h2>
+                <ul className="list-disc pl-5">
+                  {job.qualifications.map((qual, index) => (
+                    <li key={index}>{qual}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-          {job.skills && job.skills.length > 0 && (
-            <>
-              <h2 className="text-xl font-semibold mt-4 mb-2">Required Skills</h2>
-              <ul className="list-disc pl-5">
-                {job.skills.map((skill, index) => (
-                  <li key={index}>{skill}</li>
-                ))}
-              </ul>
-            </>
-          )}
+            {job.skills && job.skills.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold mt-4 mb-2">Required Skills</h2>
+                <ul className="list-disc pl-5">
+                  {job.skills.map((skill, index) => (
+                    <li key={index}>{skill}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-          {job.additionalSkills && job.additionalSkills.length > 0 && (
-            <>
-              <h2 className="text-xl font-semibold mt-4 mb-2">Additional Skills</h2>
-              <ul className="list-disc pl-5">
-                {job.additionalSkills.map((skill, index) => (
-                  <li key={index}>{skill}</li>
-                ))}
-              </ul>
-            </>
-          )}
-        </CardContent>
-      </Card>
+            {job.additionalSkills && job.additionalSkills.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold mt-4 mb-2">Additional Skills</h2>
+                <ul className="list-disc pl-5">
+                  {job.additionalSkills.map((skill, index) => (
+                    <li key={index}>{skill}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </CardContent>
+        </Card>
 
-      <h2 className="text-2xl font-bold mb-4">Applicants</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {transitions((style, applicant) => (
-          <animated.div style={style} key={applicant.id}>
-            <Card>
-              <CardHeader>
-                <CardTitle>{applicant.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">Experience: {applicant.experience}</p>
-              </CardContent>
-            </Card>
-          </animated.div>
-        ))}
-      </div>
+        <h2 className="text-2xl font-bold mb-4 mt-8">Applicants</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {transitions((style, applicant) => (
+            <animated.div style={style} key={applicant.id}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{applicant.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Experience: {applicant.experience}</p>
+                </CardContent>
+              </Card>
+            </animated.div>
+          ))}
+        </div>
 
-      <div className="mt-8">
-        <Link href="/">
-          <Button>Back to Job Listings</Button>
-        </Link>
-      </div>
-    </main>
+        <div className="mt-8">
+          <Link href="/jobs">
+            <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">Back to Job Listings</Button>
+          </Link>
+        </div>
+      </main>
+    </div>
   )
 }
-

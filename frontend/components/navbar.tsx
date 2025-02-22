@@ -24,35 +24,6 @@ export default function Navbar() {
 
   return (
     <nav className="container mx-auto px-4 py-8">
-      <ul className="flex space-x-4 items-center">
-        <li>
-          <a href="/">Logo</a>
-        </li>
-        <li className="flex-1 text-right">
-          <a href="/about-us">About us</a>
-        </li>
-        {connected && (
-          <li className="flex items-center space-x-2">
-            <img src={user?.avatar} className="h-8 w-8 rounded-full" />
-            <span>{user?.name}</span>
-            {!initialized && (
-              <button
-                className="ml-3 mr-2"
-                onClick={() => {
-                  initUser();
-                }}
-              >
-                Initialize User
-              </button>
-            )}
-          </li>
-        )}
-        {!connected && (
-          <li>
-            <button onClick={connectHandler}>Connect</button>
-          </li>
-        )}
-      </ul>
     </nav>
   );
 }

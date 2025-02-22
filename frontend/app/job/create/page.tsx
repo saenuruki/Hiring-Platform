@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import type { Job } from "../../page"
+import { NavBar } from "@/components/nav-bar"
 
 interface FormData {
   title: string
@@ -137,119 +138,121 @@ export default function CreateJob() {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Create New Job Listing</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Job Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="pdf-upload">Upload PDF (Optional)</Label>
-              <Input
-                id="pdf-upload"
-                type="file"
-                accept=".pdf,application/pdf"
-                onChange={handleFileUpload}
-                disabled={isLoading}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="company">Company Name</Label>
-              <Input
-                id="company"
-                name="company"
-                value={formData.company}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="overview">Overview</Label>
-              <Textarea
-                id="overview"
-                name="overview"
-                value={formData.overview}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="keyResponsibilities">Key Responsibilities (one per line)</Label>
-              <Textarea
-                id="keyResponsibilities"
-                name="keyResponsibilities"
-                value={formData.keyResponsibilities}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="qualifications">Qualifications (one per line)</Label>
-              <Textarea
-                id="qualifications"
-                name="qualifications"
-                value={formData.qualifications}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="skills">Skills (one per line)</Label>
-              <Textarea
-                id="skills"
-                name="skills"
-                value={formData.skills}
-                onChange={handleInputChange}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="additionalSkills">Additional Skills (one per line)</Label>
-              <Textarea
-                id="additionalSkills"
-                name="additionalSkills"
-                value={formData.additionalSkills}
-                onChange={handleInputChange}
-                className="mt-1"
-              />
-            </div>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create Job Listing"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </main>
+    <div className="min-h-screen bg-white">
+      <NavBar />
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Create New Job</h1>
+        <Card>
+          <CardHeader>
+            <CardTitle>Job Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="pdf-upload">Upload PDF (Optional)</Label>
+                <Input
+                  id="pdf-upload"
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  onChange={handleFileUpload}
+                  disabled={isLoading}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="company">Company Name</Label>
+                <Input
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="overview">Overview</Label>
+                <Textarea
+                  id="overview"
+                  name="overview"
+                  value={formData.overview}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="keyResponsibilities">Key Responsibilities (one per line)</Label>
+                <Textarea
+                  id="keyResponsibilities"
+                  name="keyResponsibilities"
+                  value={formData.keyResponsibilities}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="qualifications">Qualifications (one per line)</Label>
+                <Textarea
+                  id="qualifications"
+                  name="qualifications"
+                  value={formData.qualifications}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="skills">Skills (one per line)</Label>
+                <Textarea
+                  id="skills"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="additionalSkills">Additional Skills (one per line)</Label>
+                <Textarea
+                  id="additionalSkills"
+                  name="additionalSkills"
+                  value={formData.additionalSkills}
+                  onChange={handleInputChange}
+                  className="mt-1"
+                />
+              </div>
+              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 py-6 text-lg rounded-full">
+                {isLoading ? "Creating..." : "Create Job Listing"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
   )
 }
-
