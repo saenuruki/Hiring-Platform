@@ -18,7 +18,8 @@ export const useTaskContext = () => {
 
 export const TaskContextProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
-  const [transactionPending, setTransactionPending] = useState(false);
+  const [task, setTask] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const anchorWallet = useAnchorWallet();
   const { connection } = useConnection();
@@ -34,12 +35,6 @@ export const TaskContextProvider = ({ children }) => {
       return new anchor.Program(idl, PROGRAM_KEY, provider);
     }
   }, [connection, anchorWallet]);
-
-  useEffect(() => {
-    if (!transactionPending) {
-      loadTasks();
-    }
-  }, [program, publicKey, transactionPending]);
 
   const createIpfs = async (data) => {
     const form_data = new FormData();
@@ -65,7 +60,7 @@ export const TaskContextProvider = ({ children }) => {
   const createTask = async (title, hash) => {
     if (program && publicKey) {
       try {
-        setTransactionPending(true);
+        setLoading(true);
         const taskAccount1 = anchor.web3.Keypair.generate();
         console.log(taskAccount1.publicKey.toBase58());
 
@@ -80,23 +75,59 @@ export const TaskContextProvider = ({ children }) => {
       } catch (error) {
         console.log(error);
       } finally {
-        setTransactionPending(false);
+        setLoading(false);
       }
     }
   };
 
   const loadTasks = async () => {
     if (program && publicKey) {
-      const allTasks = await program.account.task.all();
-      console.log(allTasks);
-      setTasks(allTasks);
+      setLoading(true);
+      try {
+        const allTasks = await program.account.task.all();
+        const preparedTasks = allTasks.map((task) => ({
+          ...task,
+          key: task.publicKey.toBase58(),
+        }));
+        setTasks(preparedTasks);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const loadTask = async (id) => {
+    if (program && publicKey) {
+      setLoading(true);
+      try {
+        const publicKey = new PublicKey(id);
+        const solanaTask = await program.account.task.fetch(publicKey);
+
+        solanaTask.data = await fetch(
+          `https://gateway.ipfs.io/ipfs/${solanaTask.ipfsHash}`
+        ).then((r) => r.json());
+        console.log(solanaTask);
+        setTask(solanaTask);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   return (
     <TaskContext.Provider
       value={{
+        program,
+        publicKey,
+        loading,
         tasks,
+        task,
+        loadTask,
+        loadTasks,
         createTask,
         createIpfs,
       }}

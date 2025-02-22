@@ -6,19 +6,31 @@ import { useParams } from "next/navigation";
 import { useTransition, animated } from "react-spring";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Job } from "../../jobs/page"
-import type { Applicant } from "../../applicant/[id]/page"
+import type { Applicant } from "../../applicant/[id]/page";
+import { useTaskContext } from "@/components/task-provider";
+import Loading from "@/components/loading";
 
 // Function to generate a random applicant (unchanged)
 const generateRandomApplicant = () => {
-  const names = ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Henry", "Ivy", "Jack"]
+  const names = [
+    "Alice",
+    "Bob",
+    "Charlie",
+    "David",
+    "Eva",
+    "Frank",
+    "Grace",
+    "Henry",
+    "Ivy",
+    "Jack",
+  ];
   const descriptions = [
     "Experienced professional with a track record of success.",
     "Innovative problem-solver ready to tackle new challenges.",
     "Detail-oriented individual with excellent communication skills.",
     "Adaptable team player with a passion for learning.",
     "Results-driven expert committed to delivering high-quality work.",
-  ]
+  ];
   return {
     id: Math.random().toString(36).substr(2, 9),
     name: names[Math.floor(Math.random() * names.length)],
@@ -28,31 +40,57 @@ const generateRandomApplicant = () => {
   };
 };
 
+const Task = {
+  key: "1",
+  title: "Web Scraping",
+  description:
+    "Looking for a web scraping expert to extract data from multiple websites.",
+  goals: ["Extract data from 5 websites", "Deliver results in CSV format"],
+  skills: ["Python", "Web Scraping", "Data Extraction"],
+};
+
+export interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  goals?: string[];
+  skills?: string[];
+}
+
 export default function JobDetail() {
   const params = useParams();
-  const [job, setJob] = useState<Job | null>(null);
+
+  const { program, publicKey, loading, task, loadTask } = useTaskContext();
+
+  useEffect(() => {
+    loadTask(params.id);
+  }, [params.id, program, publicKey]);
+
   const [applicants, setApplicants] = useState<Applicant[]>([
     {
       id: 1,
       name: "Johnson",
       rating: 4,
       price: 45,
-      description: "Experienced web scraper with expertise in Python and BeautifulSoup. Fast and accurate data extraction guaranteed."
+      description:
+        "Experienced web scraper with expertise in Python and BeautifulSoup. Fast and accurate data extraction guaranteed.",
     },
     {
       id: 2,
       name: "Smith",
       rating: 3,
       price: 39,
-      description: "Skilled data analyst specializing in web scraping and data cleaning. Proficient in R and rvest package."
+      description:
+        "Skilled data analyst specializing in web scraping and data cleaning. Proficient in R and rvest package.",
     },
     {
       id: 3,
       name: "Brown",
       rating: 5,
       price: 81,
-      description: "Full-stack developer with strong web scraping skills. Expert in JavaScript and Node.js for efficient data extraction."
-    }
+      description:
+        "Full-stack developer with strong web scraping skills. Expert in JavaScript and Node.js for efficient data extraction.",
+    },
   ]);
 
   useEffect(() => {
@@ -73,16 +111,6 @@ export default function JobDetail() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const jobId = Number.parseInt(params.id as string, 10);
-    const savedJobs = localStorage.getItem("jobs");
-    if (savedJobs) {
-      const jobs: Job[] = JSON.parse(savedJobs);
-      const foundJob = jobs.find((j) => j.id === jobId);
-      setJob(foundJob || null);
-    }
-  }, [params.id]);
-
   const transitions = useTransition(applicants, {
     from: { opacity: 0, transform: "scale(0.8)" },
     enter: { opacity: 1, transform: "scale(1)" },
@@ -90,12 +118,12 @@ export default function JobDetail() {
     keys: (applicant: Applicant) => applicant.id,
   });
 
-  if (!job) {
+  if (!task) {
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Job Not Found</h1>
         <p>The job you're looking for doesn't exist or has been removed.</p>
-        <Link href="/">
+        <Link href="/jobs">
           <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white">
             Back to Job Listings
           </Button>
@@ -107,32 +135,36 @@ export default function JobDetail() {
   return (
     <div className="min-h-screen bg-white">
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">{job.title}</h1>
+        <h1 className="text-3xl font-bold mb-6">{task.taskId}</h1>
         <Card>
           <CardContent>
             <h2 className="text-xl font-semibold mt-4 mb-2">Description</h2>
-            <p>{job.description}</p>
+            <p>{task.data?.description}</p>
 
-            {job.goals && job.goals.length > 0 && (
+            {task.data?.goals && (
               <>
                 <h2 className="text-xl font-semibold mt-4 mb-2">Goals</h2>
                 <ul className="list-disc pl-5">
-                  {job.goals.map((goal, index) => (
-                    <li key={index}>{goal}</li>
-                  ))}
+                  {task.data?.goals
+                    .split("\n")
+                    .map((goal: string, index: Number) => (
+                      <li key={`goal-${index}`}>{goal}</li>
+                    ))}
                 </ul>
               </>
             )}
 
-            {job.skills && job.skills.length > 0 && (
+            {task.data?.skills && (
               <>
                 <h2 className="text-xl font-semibold mt-4 mb-2">
                   Required Skills
                 </h2>
                 <ul className="list-disc pl-5">
-                  {job.skills.map((skill, index) => (
-                    <li key={index}>{skill}</li>
-                  ))}
+                  {task.data?.skills
+                    .split("\n")
+                    .map((skill: string, index: Number) => (
+                      <li key={`skill-${index}`}>{skill}</li>
+                    ))}
                 </ul>
               </>
             )}
@@ -155,7 +187,9 @@ export default function JobDetail() {
                     <Link
                       href={{
                         pathname: `/applicant/${applicant.id}`,
-                        query: { data: encodeURIComponent(JSON.stringify(applicant)) },
+                        query: {
+                          data: encodeURIComponent(JSON.stringify(applicant)),
+                        },
                       }}
                     >
                       <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
