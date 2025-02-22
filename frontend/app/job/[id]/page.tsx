@@ -6,39 +6,53 @@ import { useParams } from "next/navigation";
 import { useTransition, animated } from "react-spring";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Job } from "../../page";
+import type { Job } from "../../jobs/page"
+import type { Applicant } from "../../applicant/[id]/page"
 
 // Function to generate a random applicant (unchanged)
 const generateRandomApplicant = () => {
-  const names = [
-    "John Doe",
-    "Jane Smith",
-    "Alex Johnson",
-    "Emily Brown",
-    "Chris Lee",
-  ];
-  const experiences = ["2 years", "3 years", "5 years", "7 years", "10+ years"];
+  const names = ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Henry", "Ivy", "Jack"]
+  const descriptions = [
+    "Experienced professional with a track record of success.",
+    "Innovative problem-solver ready to tackle new challenges.",
+    "Detail-oriented individual with excellent communication skills.",
+    "Adaptable team player with a passion for learning.",
+    "Results-driven expert committed to delivering high-quality work.",
+  ]
   return {
     id: Math.random().toString(36).substr(2, 9),
     name: names[Math.floor(Math.random() * names.length)],
-    experience: experiences[Math.floor(Math.random() * experiences.length)],
+    rating: Math.floor(Math.random() * 5) + 1,
+    price: Math.floor(Math.random() * 100) + 20,
+    description: descriptions[Math.floor(Math.random() * descriptions.length)],
   };
 };
-
-// アプリケーントの型を定義
-interface Applicant {
-  id: string;
-  name: string;
-  experience: string;
-}
 
 export default function JobDetail() {
   const params = useParams();
   const [job, setJob] = useState<Job | null>(null);
   const [applicants, setApplicants] = useState<Applicant[]>([
-    { id: "1", name: "John Doe", experience: "5 years" },
-    { id: "2", name: "Jane Smith", experience: "3 years" },
-    { id: "3", name: "Bob Johnson", experience: "7 years" },
+    {
+      id: 1,
+      name: "Johnson",
+      rating: 4,
+      price: 45,
+      description: "Experienced web scraper with expertise in Python and BeautifulSoup. Fast and accurate data extraction guaranteed."
+    },
+    {
+      id: 2,
+      name: "Smith",
+      rating: 3,
+      price: 39,
+      description: "Skilled data analyst specializing in web scraping and data cleaning. Proficient in R and rvest package."
+    },
+    {
+      id: 3,
+      name: "Brown",
+      rating: 5,
+      price: 81,
+      description: "Full-stack developer with strong web scraping skills. Expert in JavaScript and Node.js for efficient data extraction."
+    }
   ]);
 
   useEffect(() => {
@@ -103,8 +117,8 @@ export default function JobDetail() {
               <>
                 <h2 className="text-xl font-semibold mt-4 mb-2">Goals</h2>
                 <ul className="list-disc pl-5">
-                  {job.goals.map((resp, index) => (
-                    <li key={index}>{resp}</li>
+                  {job.goals.map((goal, index) => (
+                    <li key={index}>{goal}</li>
                   ))}
                 </ul>
               </>
@@ -135,8 +149,20 @@ export default function JobDetail() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Experience: {applicant.experience}
+                    {applicant.description}
                   </p>
+                  <div className=" mt-8">
+                    <Link
+                      href={{
+                        pathname: `/applicant/${applicant.id}`,
+                        query: { data: encodeURIComponent(JSON.stringify(applicant)) },
+                      }}
+                    >
+                      <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
+                        More Info
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </animated.div>

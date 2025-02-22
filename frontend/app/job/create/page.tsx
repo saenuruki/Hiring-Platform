@@ -113,7 +113,7 @@ export default function CreateJob() {
       localStorage.setItem("jobs", JSON.stringify(updatedJobs));
 
       toast.success("Job listing created successfully");
-      router.push("/");
+      router.push("/jobs");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to create job listing");
