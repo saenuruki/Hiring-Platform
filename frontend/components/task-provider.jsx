@@ -7,7 +7,6 @@ import {
 } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import idl from "../app/idl.json";
-import { BN } from "@project-serum/anchor";
 
 const TaskContext = createContext();
 
@@ -70,7 +69,7 @@ export const TaskContextProvider = ({ children }) => {
         const taskAccount1 = anchor.web3.Keypair.generate();
 
         await program.methods
-          .addTask("a-random-task-id-1", hash, new BN(20000))
+          .addTask("a-random-task-id-1", hash)
           .accounts({
             task: taskAccount1.publicKey,
             creator: publicKey,
@@ -87,7 +86,8 @@ export const TaskContextProvider = ({ children }) => {
 
   const loadTasks = async () => {
     if (program && publicKey) {
-      const allTasks = await program.account.task.fetchAll();
+      const allTasks = await program.account.task.all();
+      console.log(allTasks);
       setTasks(allTasks);
     }
   };
