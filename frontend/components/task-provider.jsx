@@ -104,10 +104,9 @@ export const TaskContextProvider = ({ children }) => {
       try {
         const publicKey = new PublicKey(id);
         const solanaTask = await program.account.task.fetch(publicKey);
-
-        solanaTask.data = await fetch(
-          `https://gateway.ipfs.io/ipfs/${solanaTask.ipfsHash}`
-        ).then((r) => r.json());
+        solanaTask.data = await fetch("/api/ipfs/" + solanaTask.ipfsHash).then(
+          (r) => r.json()
+        );
         console.log(solanaTask);
         setTask(solanaTask);
       } catch (error) {

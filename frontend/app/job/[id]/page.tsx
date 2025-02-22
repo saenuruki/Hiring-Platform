@@ -60,7 +60,7 @@ export interface Task {
 export default function JobDetail() {
   const params = useParams();
 
-  const { program, publicKey, loading, task, loadTask } = useTaskContext();
+  const { program, publicKey, task, loadTask } = useTaskContext();
 
   useEffect(() => {
     loadTask(params.id);
