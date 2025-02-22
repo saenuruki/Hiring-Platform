@@ -2,13 +2,21 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useTransition, animated } from "react-spring";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Applicant } from "../../applicant/[id]/page";
 import { useTaskContext } from "@/components/task-provider";
 import Loading from "@/components/loading";
+
+// export interface Job {
+//   id: number;
+//   title: string;
+//   description?: string;
+//   goals?: string[];
+//   skills?: string[];
+// }
 
 // Function to generate a random applicant (unchanged)
 const generateRandomApplicant = () => {
