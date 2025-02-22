@@ -1,5 +1,4 @@
 use anchor_lang::{prelude::*, solana_program::clock};
-use std::convert::TryInto;
 
 declare_id!("G23R2nqZGHGZnbSQ54QDSBhXVQtKD45VxWXhheEEF9xa");
 
@@ -7,20 +6,32 @@ declare_id!("G23R2nqZGHGZnbSQ54QDSBhXVQtKD45VxWXhheEEF9xa");
 pub mod task_manager {
     use super::*;
 
-    pub fn add_task(
-        ctx: Context<AddTask>,
-        task_id: String,
-        ipfs_hash: String,
-        cost: u64,
-    ) -> Result<()> {
+    pub fn add_task(ctx: Context<AddTask>, task_id: String, ipfs_hash: String) -> Result<()> {
         let task = &mut ctx.accounts.task;
-        task.creator = *ctx.accounts.creator.key;
         task.solver = None; // No solver yet
         task.task_id = task_id;
         task.ipfs_hash = ipfs_hash;
-        task.cost = cost;
+        task.accepted_offer_id = None; // No accepted offer yet
+        task.cost = None; // No cost yet
+        task.created_by = *ctx.accounts.creator.key;
         task.created_at = clock::Clock::get()?.unix_timestamp.to_string();
         task.status = TaskStatus::Open;
+        Ok(())
+    }
+
+    pub fn apply_to_task(
+        ctx: Context<ApplyToTask>,
+        task_id: String,
+        offer_id: String,
+        amount: u64,
+    ) -> Result<()> {
+        let offer = &mut ctx.accounts.offer;
+        let task = &mut ctx.accounts.task;
+        require!(task.status == TaskStatus::Open, TaskError::TaskNotOpen);
+        offer.offer_id = offer_id;
+        offer.task_id = task_id;
+        offer.amount = amount;
+        offer.created_by = *ctx.accounts.creator.key;
         Ok(())
     }
 
@@ -43,6 +54,8 @@ pub mod task_manager {
             task.solver.unwrap() == *ctx.accounts.solver.key,
             TaskError::NotTaskSolver
         );
+        require!(task.cost.is_some(), TaskError::NoCostSet);
+        let cost = task.cost.unwrap();
 
         task.status = TaskStatus::Completed;
 
@@ -51,12 +64,12 @@ pub mod task_manager {
             .accounts
             .solver
             .to_account_info()
-            .try_borrow_mut_lamports()? += task.cost;
+            .try_borrow_mut_lamports()? += cost;
         **ctx
             .accounts
             .creator
             .to_account_info()
-            .try_borrow_mut_lamports()? -= task.cost;
+            .try_borrow_mut_lamports()? -= cost;
 
         Ok(())
     }
@@ -65,6 +78,17 @@ pub mod task_manager {
 #[derive(Accounts)]
 pub struct AddTask<'info> {
     #[account(init, payer = creator, space = 128)]
+    pub task: Account<'info, Task>,
+    #[account(mut)]
+    pub creator: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct ApplyToTask<'info> {
+    #[account(init, payer = creator, space = 128)]
+    pub offer: Account<'info, Offer>,
+    #[account(mut)]
     pub task: Account<'info, Task>,
     #[account(mut)]
     pub creator: Signer<'info>,
@@ -90,13 +114,22 @@ pub struct CompleteTask<'info> {
 
 #[account]
 pub struct Task {
-    pub creator: Pubkey,
     pub solver: Option<Pubkey>,
     pub task_id: String,
-    pub ipfs_hash: String, // Stores IPFS hash for task details
-    pub cost: u64,
+    pub accepted_offer_id: Option<String>, // Stores the accepted offer id
+    pub ipfs_hash: String,                 // Stores IPFS hash for task details
+    pub cost: Option<u64>,
     pub status: TaskStatus,
+    pub created_by: Pubkey,
     pub created_at: String,
+}
+
+#[account]
+pub struct Offer {
+    pub offer_id: String,
+    pub task_id: String,
+    pub amount: u64,
+    pub created_by: Pubkey,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
@@ -114,4 +147,6 @@ pub enum TaskError {
     InvalidTaskStatus,
     #[msg("You are not the assigned solver.")]
     NotTaskSolver,
+    #[msg("The task's cost must be set")]
+    NoCostSet,
 }
