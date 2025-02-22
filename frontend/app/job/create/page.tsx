@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import type { Job } from "../../page";
+import { useTaskContext } from "@/components/task-provider";
 
 interface FormData {
   title: string;
@@ -28,6 +29,7 @@ export default function CreateJob() {
     skills: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { createIpfs, createTask } = useTaskContext();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -95,31 +97,40 @@ export default function CreateJob() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setIsLoading(true);
 
-    try {
-      const existingJobs = localStorage.getItem("jobs");
-      const jobs: Job[] = existingJobs ? JSON.parse(existingJobs) : [];
+    // upload the data to IPFS
+    const hash = await createIpfs(formData);
 
-      const newJob: Job = {
-        id: Math.max(0, ...jobs.map((job) => job.id)) + 1,
-        title: formData.title,
-        description: formData.description,
-        goals: formData.goals.split("\n").filter(Boolean),
-        skills: formData.skills.split("\n").filter(Boolean),
-      };
+    // create Smart Contract
+    const res2 = await createTask(hash);
 
-      const updatedJobs = [...jobs, newJob];
-      localStorage.setItem("jobs", JSON.stringify(updatedJobs));
+    console.log(res2);
 
-      toast.success("Job listing created successfully");
-      router.push("/");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("Failed to create job listing");
-    } finally {
-      setIsLoading(false);
-    }
+    // try {
+    //   const existingJobs = localStorage.getItem("jobs");
+    //   const jobs: Job[] = existingJobs ? JSON.parse(existingJobs) : [];
+
+    //   const newJob: Job = {
+    //     id: Math.max(0, ...jobs.map((job) => job.id)) + 1,
+    //     title: formData.title,
+    //     description: formData.description,
+    //     goals: formData.goals.split("\n").filter(Boolean),
+    //     skills: formData.skills.split("\n").filter(Boolean),
+    //   };
+
+    //   const updatedJobs = [...jobs, newJob];
+    //   localStorage.setItem("jobs", JSON.stringify(updatedJobs));
+
+    //   toast.success("Job listing created successfully");
+    //   router.push("/");
+    // } catch (error) {
+    //   console.error("Error submitting form:", error);
+    //   toast.error("Failed to create job listing");
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (
