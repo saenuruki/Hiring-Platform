@@ -87,7 +87,9 @@ export default function ApplicantDetail() {
                   <h3 className="text-xl font-semibold mb-2">Terms of work</h3>
                   <p className="text-3xl font-bold mb-6">${applicant.price}</p>
                   <div className="space-y-3">
+                    {/* Start Chatting with AI Agents */}
                     <Button className="w-full bg-[#4ADE80] hover:bg-[#22C55E] text-white">ACCEPT</Button>
+                    {/* Close this screen and Delete it on the list */}
                     <Button className="w-full bg-[#F87171] hover:bg-[#EF4444] text-white">DECLINE</Button>
                   </div>
                 </Card>
