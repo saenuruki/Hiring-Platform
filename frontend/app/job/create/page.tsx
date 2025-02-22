@@ -15,26 +15,18 @@ import { NavBar } from "@/components/nav-bar"
 
 interface FormData {
   title: string
-  company: string
-  location: string
-  overview: string
-  keyResponsibilities: string
-  qualifications: string
+  description: string
+  goals: string
   skills: string
-  additionalSkills: string
 }
 
 export default function CreateJob() {
   const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
     title: "",
-    company: "",
-    location: "",
-    overview: "",
-    keyResponsibilities: "",
-    qualifications: "",
+    description: "",
+    goals: "",
     skills: "",
-    additionalSkills: "",
   })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -82,17 +74,11 @@ export default function CreateJob() {
       setFormData((prev) => ({
         ...prev,
         title: data.title || prev.title,
-        company: data.company || prev.company,
-        location: data.location || prev.location,
-        overview: data.overview || prev.overview,
-        keyResponsibilities: Array.isArray(data.keyResponsibilities)
-          ? data.keyResponsibilities.join("\n")
-          : prev.keyResponsibilities,
-        qualifications: Array.isArray(data.qualifications) ? data.qualifications.join("\n") : prev.qualifications,
+        description: data.description || prev.description,
+        goals: Array.isArray(data.goals)
+          ? data.goals.join("\n")
+          : prev.goals,
         skills: Array.isArray(data.skills) ? data.skills.join("\n") : prev.skills,
-        additionalSkills: Array.isArray(data.additionalSkills)
-          ? data.additionalSkills.join("\n")
-          : prev.additionalSkills,
       }))
 
       toast.success("PDF parsed successfully")
@@ -115,13 +101,9 @@ export default function CreateJob() {
       const newJob: Job = {
         id: Math.max(0, ...jobs.map((job) => job.id)) + 1,
         title: formData.title,
-        company: formData.company,
-        location: formData.location,
-        overview: formData.overview,
-        keyResponsibilities: formData.keyResponsibilities.split("\n").filter(Boolean),
-        qualifications: formData.qualifications.split("\n").filter(Boolean),
+        description: formData.description,
+        goals: formData.goals.split("\n").filter(Boolean),
         skills: formData.skills.split("\n").filter(Boolean),
-        additionalSkills: formData.additionalSkills.split("\n").filter(Boolean),
       }
 
       const updatedJobs = [...jobs, newJob]
@@ -171,55 +153,22 @@ export default function CreateJob() {
                 />
               </div>
               <div>
-                <Label htmlFor="company">Company Name</Label>
-                <Input
-                  id="company"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="overview">Overview</Label>
+                <Label htmlFor="overview">Description</Label>
                 <Textarea
-                  id="overview"
-                  name="overview"
-                  value={formData.overview}
+                  id="description"
+                  name="description"
+                  value={formData.description}
                   onChange={handleInputChange}
                   required
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="keyResponsibilities">Key Responsibilities (one per line)</Label>
+                <Label htmlFor="goals">Goals (one per line)</Label>
                 <Textarea
-                  id="keyResponsibilities"
-                  name="keyResponsibilities"
-                  value={formData.keyResponsibilities}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="qualifications">Qualifications (one per line)</Label>
-                <Textarea
-                  id="qualifications"
-                  name="qualifications"
-                  value={formData.qualifications}
+                  id="goals"
+                  name="goals"
+                  value={formData.goals}
                   onChange={handleInputChange}
                   required
                   className="mt-1"
@@ -233,16 +182,6 @@ export default function CreateJob() {
                   value={formData.skills}
                   onChange={handleInputChange}
                   required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="additionalSkills">Additional Skills (one per line)</Label>
-                <Textarea
-                  id="additionalSkills"
-                  name="additionalSkills"
-                  value={formData.additionalSkills}
-                  onChange={handleInputChange}
                   className="mt-1"
                 />
               </div>

@@ -83,33 +83,16 @@ export default function JobDetail() {
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">{job.title}</h1>
         <Card>
-          <CardHeader>
-            <CardTitle>{job.title}</CardTitle>
-          </CardHeader>
           <CardContent>
-            <p className="text-lg font-semibold">{job.company}</p>
-            <p className="text-md text-muted-foreground mb-4">{job.location}</p>
+            <h2 className="text-xl font-semibold mt-4 mb-2">Description</h2>
+            <p>{job.description}</p>
 
-            <h2 className="text-xl font-semibold mt-4 mb-2">Overview</h2>
-            <p>{job.overview || job.description}</p>
-
-            {job.keyResponsibilities && job.keyResponsibilities.length > 0 && (
+            {job.goals && job.goals.length > 0 && (
               <>
-                <h2 className="text-xl font-semibold mt-4 mb-2">Key Responsibilities</h2>
+                <h2 className="text-xl font-semibold mt-4 mb-2">Goals</h2>
                 <ul className="list-disc pl-5">
-                  {job.keyResponsibilities.map((resp, index) => (
+                  {job.goals.map((resp, index) => (
                     <li key={index}>{resp}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-
-            {job.qualifications && job.qualifications.length > 0 && (
-              <>
-                <h2 className="text-xl font-semibold mt-4 mb-2">Qualifications</h2>
-                <ul className="list-disc pl-5">
-                  {job.qualifications.map((qual, index) => (
-                    <li key={index}>{qual}</li>
                   ))}
                 </ul>
               </>
@@ -120,17 +103,6 @@ export default function JobDetail() {
                 <h2 className="text-xl font-semibold mt-4 mb-2">Required Skills</h2>
                 <ul className="list-disc pl-5">
                   {job.skills.map((skill, index) => (
-                    <li key={index}>{skill}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-
-            {job.additionalSkills && job.additionalSkills.length > 0 && (
-              <>
-                <h2 className="text-xl font-semibold mt-4 mb-2">Additional Skills</h2>
-                <ul className="list-disc pl-5">
-                  {job.additionalSkills.map((skill, index) => (
                     <li key={index}>{skill}</li>
                   ))}
                 </ul>
