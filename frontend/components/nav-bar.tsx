@@ -13,7 +13,7 @@ export default function NavBar() {
   const { connected, select } = useWallet();
   const [connecting, setConnecting] = useState(false);
 
-  const { user, initialized, initUser } = useTaskContext();
+  const { user } = useTaskContext();
 
   const handleScroll = () => {
     if (window.scrollY > 0) {
@@ -62,16 +62,6 @@ export default function NavBar() {
           </Link>
           {connected && (
             <li className="flex items-center space-x-2">
-              <button
-                onClick={() => {
-                  initUser();
-                }}
-              >
-                <img
-                  src={user?.avatar}
-                  className="h-10 w-10 rounded-full border"
-                />
-              </button>
               <Link
                 href="/job/create"
                 className="text-black hover:text-[#7C3AED]"

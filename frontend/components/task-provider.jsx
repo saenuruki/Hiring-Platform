@@ -5,10 +5,8 @@ import {
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import idl from "../app/idl.json";
-import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
-import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 
 const TaskContext = createContext();
 
@@ -19,8 +17,7 @@ export const useTaskContext = () => {
 };
 
 export const TaskContextProvider = ({ children }) => {
-  const [user, setUser] = useState();
-  const [initialized, setInitialized] = useState(false);
+  const [tasks, setTasks] = useState([]);
   const [transactionPending, setTransactionPending] = useState(false);
 
   const anchorWallet = useAnchorWallet();
@@ -39,49 +36,47 @@ export const TaskContextProvider = ({ children }) => {
   }, [connection, anchorWallet]);
 
   useEffect(() => {
-    const start = async () => {
-      if (program && publicKey) {
-        try {
-          const [userPda] = await findProgramAddressSync(
-            [utf8.encode("user"), publicKey.toBuffer()],
-            program.programId
-          );
-
-          const user = await program.account.userAccount.fetch(userPda);
-          if (user) {
-            setInitialized(true);
-            setUser(user);
-          }
-        } catch (error) {
-          console.log(error);
-          setInitialized(false);
-        }
-      }
-    };
-
-    start();
+    if (!transactionPending) {
+      loadTasks();
+    }
   }, [program, publicKey, transactionPending]);
 
-  const initUser = async () => {
+  const createIpfs = async (data) => {
+    const form_data = new FormData();
+
+    for (const key in data) {
+      form_data.append(key, data[key]);
+    }
+
+    try {
+      const uploadRequest = await fetch("/api/ipfs", {
+        method: "POST",
+        body: form_data,
+      });
+      const ipfsHash = await uploadRequest.json();
+
+      return ipfsHash.hash;
+    } catch (e) {
+      console.log(e);
+      alert("Trouble creating Ipfs hash");
+    }
+  };
+
+  const createTask = async (title, hash) => {
     if (program && publicKey) {
       try {
         setTransactionPending(true);
-        const [userPda] = findProgramAddressSync(
-          [utf8.encode("user"), publicKey.toBuffer()],
-          program.programId
-        );
-        const name = "User " + Math.floor(Math.random() * 1000);
-        const avatar = "https://robohash.org/" + name;
+        const taskAccount1 = anchor.web3.Keypair.generate();
+        console.log(taskAccount1.publicKey.toBase58());
 
         await program.methods
-          .initUser(name, avatar)
+          .addTask(title, hash)
           .accounts({
-            userAccount: userPda,
-            authority: publicKey,
-            systemProgram: SystemProgram.programId,
+            task: taskAccount1.publicKey,
+            creator: publicKey,
           })
+          .signers([taskAccount1])
           .rpc();
-        setInitialized(true);
       } catch (error) {
         console.log(error);
       } finally {
@@ -90,12 +85,20 @@ export const TaskContextProvider = ({ children }) => {
     }
   };
 
+  const loadTasks = async () => {
+    if (program && publicKey) {
+      const allTasks = await program.account.task.all();
+      console.log(allTasks);
+      setTasks(allTasks);
+    }
+  };
+
   return (
     <TaskContext.Provider
       value={{
-        user,
-        initialized,
-        initUser,
+        tasks,
+        createTask,
+        createIpfs,
       }}
     >
       {children}

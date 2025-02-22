@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTaskContext } from "@/components/task-provider";
 
 export interface Job {
   id: number;
@@ -83,49 +84,50 @@ const initialJobs: Job[] = [
 ];
 
 export default function Home() {
-  const [jobs, setJobs] = useState<Job[]>(() => {
-    if (typeof window !== "undefined") {
-      const savedJobs = localStorage.getItem("jobs");
-      return savedJobs ? JSON.parse(savedJobs) : initialJobs;
-    }
-    return initialJobs;
-  });
+  const { tasks } = useTaskContext();
+  // const [jobs, setJobs] = useState<Job[]>(() => {
+  //   if (typeof window !== "undefined") {
+  //     const savedJobs = localStorage.getItem("jobs");
+  //     return savedJobs ? JSON.parse(savedJobs) : initialJobs;
+  //   }
+  //   return initialJobs;
+  // });
 
-  useEffect(() => {
-    localStorage.setItem("jobs", JSON.stringify(jobs));
-  }, [jobs]);
+  // useEffect(() => {
+  //   localStorage.setItem("jobs", JSON.stringify(jobs));
+  // }, [jobs]);
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedJobs = localStorage.getItem("jobs");
-      if (savedJobs) {
-        setJobs(JSON.parse(savedJobs));
-      }
-    };
+  // useEffect(() => {
+  //   const handleStorageChange = () => {
+  //     const savedJobs = localStorage.getItem("jobs");
+  //     if (savedJobs) {
+  //       setJobs(JSON.parse(savedJobs));
+  //     }
+  //   };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  //   window.addEventListener("storage", handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener("storage", handleStorageChange);
+  //   };
+  // }, []);
 
   return (
     <div className="min-h-screen bg-white">
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {jobs.map((job) => (
-            <Card key={job.id}>
+          {tasks.map((task: any) => (
+            <Card key={task.account.taskId}>
               <CardHeader>
-                <CardTitle>{job.title}</CardTitle>
+                <CardTitle>{task.account.taskId}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  {job.description}
+                  {task.description}
                 </p>
               </CardContent>
               <CardFooter>
-                <Link href={`/job/${job.id}`}>
+                <Link href={`/job/${task.account.taskId}`}>
                   <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
                     View Details
                   </Button>

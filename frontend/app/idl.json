@@ -1,40 +1,113 @@
 {
   "version": "0.1.0",
-  "name": "task_sol",
-  "constants": [
-    { "name": "USER_SEED", "type": "bytes", "value": "[117, 115, 101, 114]" },
-    { "name": "TASK_SEED", "type": "bytes", "value": "[116, 97, 115, 107]" }
-  ],
+  "name": "task_manager",
   "instructions": [
     {
-      "name": "initUser",
+      "name": "addTask",
       "accounts": [
-        { "name": "userAccount", "isMut": true, "isSigner": false },
-        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "task", "isMut": true, "isSigner": true },
+        { "name": "creator", "isMut": true, "isSigner": true },
         { "name": "systemProgram", "isMut": false, "isSigner": false }
       ],
       "args": [
-        { "name": "name", "type": "string" },
-        { "name": "avatar", "type": "string" }
+        { "name": "taskId", "type": "string" },
+        { "name": "ipfsHash", "type": "string" }
       ]
+    },
+    {
+      "name": "applyToTask",
+      "accounts": [
+        { "name": "offer", "isMut": true, "isSigner": true },
+        { "name": "task", "isMut": true, "isSigner": false },
+        { "name": "creator", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "taskId", "type": "string" },
+        { "name": "offerId", "type": "string" },
+        { "name": "amount", "type": "u64" }
+      ]
+    },
+    {
+      "name": "acceptTask",
+      "accounts": [
+        { "name": "task", "isMut": true, "isSigner": false },
+        { "name": "solver", "isMut": false, "isSigner": true }
+      ],
+      "args": [{ "name": "taskId", "type": "u64" }]
+    },
+    {
+      "name": "completeTask",
+      "accounts": [
+        { "name": "task", "isMut": true, "isSigner": false },
+        { "name": "solver", "isMut": true, "isSigner": true },
+        { "name": "creator", "isMut": true, "isSigner": true }
+      ],
+      "args": [{ "name": "taskId", "type": "u64" }]
     }
   ],
   "accounts": [
     {
-      "name": "UserAccount",
+      "name": "Task",
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "name", "type": "string" },
-          { "name": "avatar", "type": "string" },
-          { "name": "authority", "type": "publicKey" },
-          { "name": "lastTaskId", "type": "u8" },
-          { "name": "taskCount", "type": "u8" }
+          { "name": "solver", "type": { "option": "publicKey" } },
+          { "name": "taskId", "type": "string" },
+          { "name": "acceptedOfferId", "type": { "option": "string" } },
+          { "name": "ipfsHash", "type": "string" },
+          { "name": "cost", "type": { "option": "u64" } },
+          { "name": "status", "type": { "defined": "TaskStatus" } },
+          { "name": "createdBy", "type": "publicKey" },
+          { "name": "createdAt", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "Offer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "offerId", "type": "string" },
+          { "name": "taskId", "type": "string" },
+          { "name": "amount", "type": "u64" },
+          { "name": "createdBy", "type": "publicKey" }
         ]
       }
     }
   ],
+  "types": [
+    {
+      "name": "TaskStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Open" },
+          { "name": "InProgress" },
+          { "name": "Completed" }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TaskNotOpen",
+      "msg": "Task is not open for accepting."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidTaskStatus",
+      "msg": "Task is not in progress."
+    },
+    {
+      "code": 6002,
+      "name": "NotTaskSolver",
+      "msg": "You are not the assigned solver."
+    },
+    { "code": 6003, "name": "NoCostSet", "msg": "The task's cost must be set" }
+  ],
   "metadata": {
-    "address": "6VZp47hS7nH2JxnmzwWeCsot2nkjrQermdRVPVT95jBj"
+    "address": "2td7eb1zW1AR8h7e13TR7STLEWiNDWfkqnJYkUSMBUBj"
   }
 }
