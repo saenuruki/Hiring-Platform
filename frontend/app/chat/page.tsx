@@ -6,10 +6,11 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { PDFMessage } from "@/components/pdf-message"
 
 type Message = {
   id: number
-  role: "user" | "assistant"
+  role: "user" | "assistant" | "pdf"
   content: string
 }
 
@@ -17,16 +18,17 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isFirstMessage, setIsFirstMessage] = useState(true)
-  const [showPDF, setShowPDF] = useState(false)
+//   const [showPDF, setShowPDF] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [])
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [scrollToBottom])
+//   const scrollToBottom = useCallback(() => {
+//     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+//   }, [])
+
+//   useEffect(() => {
+//     scrollToBottom()
+//   }, [scrollToBottom])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,15 +59,20 @@ export default function Chat() {
     })
 
     setTimeout(() => {
-      setShowPDF(true)
+        const pdfMessage: Message = { id: Date.now() + responses.length, role: "pdf", content: "@/public/report.pdf" }
+        setMessages((prev) => [...prev, pdfMessage])
     }, 10000)
+
+    // setTimeout(() => {
+    //   setShowPDF(true)
+    // }, 10000)
   }
 
   return (
     <div className="flex flex-col h-screen bg-white">
       <main className="container mx-auto px-4 py-4 h-[calc(100vh-theme(spacing.16)-theme(spacing.16))] flex items-center justify-center">
         <Card className="w-full h-full max-w-3xl overflow-hidden flex flex-col">
-          <CardContent className="flex-grow overflow-y-auto p-4 space-y-4">
+          {/* <CardContent className="flex-grow overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
@@ -82,6 +89,24 @@ export default function Chat() {
                 <embed src="https://arxiv.org/pdf/1706.03762" type="application/pdf" width="100%" height="600px" />
               </div>
             )}
+            <div ref={messagesEndRef} />
+          </CardContent> */}
+            <CardContent className="flex-grow overflow-y-auto p-4 space-y-4">
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                {message.role === "pdf" ? (
+                  <PDFMessage pdfUrl="@/public/report.pdf" />
+                ) : (
+                  <div
+                    className={`max-w-[70%] rounded-lg p-3 ${
+                      message.role === "user" ? "bg-[#7C3AED] text-white" : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                )}
+              </div>
+            ))}
             <div ref={messagesEndRef} />
           </CardContent>
           <div className="p-4 border-t bg-white">

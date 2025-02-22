@@ -1,24 +1,24 @@
-import OpenAI from "openai"
-import { OpenAIStream, StreamingTextResponse } from "ai"
+// import OpenAI from "openai"
+// import { OpenAIStream, StreamingTextResponse } from "ai"
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL,
-})
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+//   baseURL: process.env.OPENAI_BASE_URL,
+// })
 
-export const runtime = "edge"
+// export const runtime = "edge"
 
-export async function POST(req: Request) {
-  const { messages } = await req.json()
+// export async function POST(req: Request) {
+//   const { messages } = await req.json()
 
-  const response = await openai.chat.completions.create({
-    model: "ghostwriter",
-    stream: true,
-    messages,
-  })
+//   const response = await openai.chat.completions.create({
+//     model: "ghostwriter",
+//     stream: true,
+//     messages,
+//   })
 
-  const stream = OpenAIStream(response)
+//   const stream = OpenAIStream(response)
 
-  return new StreamingTextResponse(stream)
-}
+//   return new StreamingTextResponse(stream)
+// }
 
