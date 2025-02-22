@@ -30,12 +30,12 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full lg:w-1/2 flex items-center">
-            <div className="relative w-full h-auto max-h-[400px]">
+            <div className="relative w-full h-auto">
               <Image
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/home-1gJAhcNEZ3bPaAbn4yNvwHLnNyL0HQ.png"
                 alt="Team illustration"
                 width={500}
-                height={400}
+                height={500}
                 priority
                 className="object-contain w-full h-auto"
               />

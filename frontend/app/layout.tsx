@@ -20,6 +20,11 @@ export default function RootLayout({
         <Providers>
           <NavBar />
           {children}
+          <div className="bg-gray-200 ">
+            <div className="container  mx-auto px-4 py-4 flex justify-between items-center">
+              Builders Weekend Hackathon - 2025
+            </div>
+          </div>
         </Providers>
       </body>
     </html>
