@@ -133,84 +133,82 @@ export default function JobDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">{task.taskId}</h1>
-        <Card>
-          <CardContent>
-            <h2 className="text-xl font-semibold mt-4 mb-2">Description</h2>
-            <p>{task.data?.description}</p>
+    <main className="container mx-auto px-4">
+      <h1 className="text-3xl font-bold mb-6">{task.taskId}</h1>
+      <Card>
+        <CardContent>
+          <h2 className="text-xl font-semibold mt-4 mb-2">Description</h2>
+          <p>{task.data?.description}</p>
 
-            {task.data?.goals && (
-              <>
-                <h2 className="text-xl font-semibold mt-4 mb-2">Goals</h2>
-                <ul className="list-disc pl-5">
-                  {task.data?.goals
-                    .split("\n")
-                    .map((goal: string, index: Number) => (
-                      <li key={`goal-${index}`}>{goal}</li>
-                    ))}
-                </ul>
-              </>
-            )}
+          {task.data?.goals && (
+            <>
+              <h2 className="text-xl font-semibold mt-4 mb-2">Goals</h2>
+              <ul className="list-disc pl-5">
+                {task.data?.goals
+                  .split("\n")
+                  .map((goal: string, index: Number) => (
+                    <li key={`goal-${index}`}>{goal}</li>
+                  ))}
+              </ul>
+            </>
+          )}
 
-            {task.data?.skills && (
-              <>
-                <h2 className="text-xl font-semibold mt-4 mb-2">
-                  Required Skills
-                </h2>
-                <ul className="list-disc pl-5">
-                  {task.data?.skills
-                    .split("\n")
-                    .map((skill: string, index: Number) => (
-                      <li key={`skill-${index}`}>{skill}</li>
-                    ))}
-                </ul>
-              </>
-            )}
-          </CardContent>
-        </Card>
+          {task.data?.skills && (
+            <>
+              <h2 className="text-xl font-semibold mt-4 mb-2">
+                Required Skills
+              </h2>
+              <ul className="list-disc pl-5">
+                {task.data?.skills
+                  .split("\n")
+                  .map((skill: string, index: Number) => (
+                    <li key={`skill-${index}`}>{skill}</li>
+                  ))}
+              </ul>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
-        <h2 className="text-2xl font-bold mb-4 mt-8">Applicants</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {transitions((style, applicant) => (
-            <animated.div style={style} key={applicant.id}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>{applicant.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {applicant.description}
-                  </p>
-                  <div className=" mt-8">
-                    <Link
-                      href={{
-                        pathname: `/applicant/${applicant.id}`,
-                        query: {
-                          data: encodeURIComponent(JSON.stringify(applicant)),
-                        },
-                      }}
-                    >
-                      <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
-                        More Info
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            </animated.div>
-          ))}
-        </div>
+      <h2 className="text-2xl font-bold mb-4 mt-8">Applicants</h2>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {transitions((style, applicant) => (
+          <animated.div style={style} key={applicant.id}>
+            <Card>
+              <CardHeader>
+                <CardTitle>{applicant.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  {applicant.description}
+                </p>
+                <div className=" mt-8">
+                  <Link
+                    href={{
+                      pathname: `/applicant/${applicant.id}`,
+                      query: {
+                        data: encodeURIComponent(JSON.stringify(applicant)),
+                      },
+                    }}
+                  >
+                    <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
+                      More Info
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </animated.div>
+        ))}
+      </div>
 
-        <div className="mt-8">
-          <Link href="/jobs">
-            <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
-              Back to Job Listings
-            </Button>
-          </Link>
-        </div>
-      </main>
-    </div>
+      <div className="mt-8">
+        <Link href="/jobs">
+          <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
+            Back to Job Listings
+          </Button>
+        </Link>
+      </div>
+    </main>
   );
 }

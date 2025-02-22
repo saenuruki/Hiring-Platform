@@ -16,10 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen flex flex-col">
         <Providers>
           <NavBar />
-          {children}
+          <main className="flex-1 py-12">{children}</main>
           <div className="bg-gray-200 ">
             <div className="container  mx-auto px-4 py-4 flex justify-between items-center">
               Builders Weekend Hackathon - 2025

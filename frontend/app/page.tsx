@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       {/* Hero Section */}
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <div className="w-full lg:w-1/2 space-y-6">
             <h1 className="text-5xl font-bold leading-tight">
@@ -30,13 +30,18 @@ export default function Home() {
           </div>
           <div className="w-full lg:w-1/2 flex items-center">
             <div className="relative w-full h-auto">
+              <div className="absolute top-0 left-0 animate-pulse rounded-full h-full w-full bg-purple-100 z-0 flex items-center justify-center">
+                <div className="animate-pulse rounded-full h-[90%] w-[90%] bg-purple-50 z-0 flex items-center justify-center">
+                  <div className="rounded-full h-[90%] w-[90%] bg-white z-0"></div>
+                </div>
+              </div>
               <Image
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/home-1gJAhcNEZ3bPaAbn4yNvwHLnNyL0HQ.png"
                 alt="Team illustration"
                 width={500}
                 height={500}
                 priority
-                className="object-contain w-full h-auto"
+                className="relative object-contain w-full h-auto z-10"
               />
             </div>
           </div>

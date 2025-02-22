@@ -32,11 +32,12 @@ export default function Tasks() {
   console.log(tasks);
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {tasks.map((task: any) => (
+    <main className="container mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Gig Listings</h1>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {tasks
+          .sort((a: any, b: any) => b.account.createdAt - a.account.createdAt)
+          .map((task: any) => (
             <Card key={task.key}>
               <CardHeader>
                 <CardTitle>{task.account.taskId}</CardTitle>
@@ -55,8 +56,7 @@ export default function Tasks() {
               </CardFooter>
             </Card>
           ))}
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
