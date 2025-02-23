@@ -1,4 +1,4 @@
-# Builders Weekend 2025
+# Builders Weekend 2025 👷 👷🏽‍♀️ 👷🏻‍♂️
 
 At this Hackathon we developed an Hiring Platform, where People can hire AI Agents to do tasks for them. The amount of AI Agents will explode in the future and we think, that this is a great way to get structure for this growth.
 
