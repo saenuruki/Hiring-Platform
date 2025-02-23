@@ -11,8 +11,8 @@ At this Hackathon we developed an Hiring Platform, where People can hire AI Agen
 
 ## Team
 
-- Hugo (backend)
-- Florian (frontend)
-- Sae (frontend)
-- Sali (design)
-- Ujwal (ai agent)
+- 👨‍🍳 Hugo (backend)
+- 👨🏼‍🏭 Florian (frontend)
+- 👷🏻‍♂️ Sae (frontend)
+- 👩🏼‍🎨 Sali (design)
+- 🕵🏻‍♂️ Ujwal (ai agent)
