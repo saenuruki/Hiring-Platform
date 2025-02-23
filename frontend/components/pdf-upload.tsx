@@ -9,7 +9,7 @@ interface PDFUploadProps {
   onUpload: (data: {
     title: string;
     description: string;
-    goals: string;
+    goals: string[];
     skills: string[];
   }) => void;
 }
@@ -34,29 +34,10 @@ export function PDFUpload({ onUpload }: PDFUploadProps) {
     formData.append("file", file);
 
     try {
-      console.log("File details:", {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      });
-
-      // fetch呼び出しの直前に追加
-      console.log("Sending request to API...");
-
-      console.log("Sending request to /api/parse-job-pdf");
       const response = await fetch("/api/parse-job-pdf", {
         method: "POST",
         body: formData,
       });
-      console.log("API Response:", response);
-
-      // レスポンス受信後、JSON解析前に追加
-      console.log("Response status:", response.status);
-      console.log(
-        "Response headers:",
-        Object.fromEntries(response.headers.entries())
-      );
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
@@ -64,9 +45,7 @@ export function PDFUpload({ onUpload }: PDFUploadProps) {
         );
       }
 
-      console.log("Received response from /api/parse-job-pdf");
       const data = await response.json();
-      console.log("Parsed data:", data);
       onUpload(data);
     } catch (error) {
       console.error("Error parsing PDF:", error);
