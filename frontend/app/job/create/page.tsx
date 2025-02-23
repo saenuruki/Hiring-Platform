@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useTaskContext } from "@/components/task-provider";
+import { PDFUpload } from "@/components/pdf-upload";
 
 interface FormData {
   title: string;
@@ -37,61 +38,20 @@ export default function CreateJob() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.type !== "application/pdf") {
-      toast.error("Please upload a PDF file");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/parse-pdf", {
-        method: "POST",
-        body: formData,
-      });
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (error) {
-        console.error("Error parsing JSON response:", error);
-        throw new Error("Invalid response from server");
-      }
-
-      if (!response.ok) {
-        throw new Error(data.error || data.details || "Failed to parse PDF");
-      }
-
-      if (!data || typeof data !== "object") {
-        throw new Error("Invalid response data");
-      }
-
-      setFormData((prev) => ({
-        ...prev,
-        title: data.title || prev.title,
-        description: data.description || prev.description,
-        goals: Array.isArray(data.goals) ? data.goals.join("\n") : prev.goals,
-        skills: Array.isArray(data.skills)
-          ? data.skills.join("\n")
-          : prev.skills,
-      }));
-
-      toast.success("PDF parsed successfully");
-    } catch (error) {
-      console.error("Error parsing PDF:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Failed to parse PDF"
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const handlePDFUpload = (data: {
+    title: string;
+    description: string;
+    goals: string[];
+    skills: string[];
+  }) => {
+    setFormData((prev) => ({
+      ...prev,
+      title: data.title || prev.title,
+      description: data.description || prev.description,
+      goals: data.goals.join(", ") || prev.goals,
+      skills: data.skills.join(", ") || prev.skills,
+    }));
+    toast.success("PDF parsed successfully");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -151,15 +111,7 @@ export default function CreateJob() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="pdf-upload">Upload PDF (Optional)</Label>
-                <Input
-                  id="pdf-upload"
-                  type="file"
-                  accept=".pdf,application/pdf"
-                  onChange={handleFileUpload}
-                  disabled={isLoading}
-                  className="mt-1"
-                />
+                <PDFUpload onUpload={handlePDFUpload} />
               </div>
               <div>
                 <Label htmlFor="title">Title</Label>
