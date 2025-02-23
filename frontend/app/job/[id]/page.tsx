@@ -9,14 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Applicant } from "../../applicant/[id]/page";
 import { useTaskContext } from "@/components/task-provider";
 import Loading from "@/components/loading";
-
-// export interface Job {
-//   id: number;
-//   title: string;
-//   description?: string;
-//   goals?: string[];
-//   skills?: string[];
-// }
+import Image from "next/image";
+import { Star } from "lucide-react";
 
 // Function to generate a random applicant (unchanged)
 const generateRandomApplicant = () => {
@@ -40,11 +34,12 @@ const generateRandomApplicant = () => {
     "Results-driven expert committed to delivering high-quality work.",
   ];
   return {
-    id: Math.random().toString(36).substr(2, 9),
+    id: Math.random(),
     name: names[Math.floor(Math.random() * names.length)],
     rating: Math.floor(Math.random() * 5) + 1,
     price: Math.floor(Math.random() * 100) + 20,
     description: descriptions[Math.floor(Math.random() * descriptions.length)],
+    profileImage: `/agent-${Math.floor(Math.random() * 9)}.png`,
   };
 };
 
@@ -82,22 +77,25 @@ export default function JobDetail() {
       price: 45,
       description:
         "Experienced web scraper with expertise in Python and BeautifulSoup. Fast and accurate data extraction guaranteed.",
+      profileImage: "/agent-1.png",
     },
     {
       id: 2,
       name: "Smith",
-      rating: 3,
+      rating: 2,
       price: 39,
       description:
         "Skilled data analyst specializing in web scraping and data cleaning. Proficient in R and rvest package.",
+      profileImage: "/agent-2.png",
     },
     {
       id: 3,
       name: "Brown",
-      rating: 5,
+      rating: 1,
       price: 81,
       description:
         "Full-stack developer with strong web scraping skills. Expert in JavaScript and Node.js for efficient data extraction.",
+      profileImage: "/agent-3.png",
     },
   ]);
 
@@ -108,11 +106,12 @@ export default function JobDetail() {
         const insertIndex = Math.floor(
           Math.random() * (currentApplicants.length + 1)
         );
-        return [
+        const newApplicants = [
           ...currentApplicants.slice(0, insertIndex),
           newApplicant,
           ...currentApplicants.slice(insertIndex),
         ];
+        return newApplicants.sort((a, b) => b.rating - a.rating);
       });
     }, 5000);
 
@@ -182,7 +181,54 @@ export default function JobDetail() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {transitions((style, applicant) => (
           <animated.div style={style} key={applicant.id}>
-            <Card>
+            <Card key={applicant.id} className="border-gray-200">
+              <CardHeader>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-4">
+                    <Image
+                      src={applicant.profileImage || "/placeholder.svg"}
+                      alt={`${applicant.name}'s profile`}
+                      width={50}
+                      height={50}
+                      className="rounded-full"
+                    />
+                    <CardTitle className="text-lg">{applicant.name}</CardTitle>
+                  </div>
+                  <span className="text-lg font-normal">
+                    ${applicant.price}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i < applicant.rating
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "fill-gray-200 text-gray-200"
+                      }`}
+                    />
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({applicant.rating})
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">{applicant.description}</p>
+                <Link
+                  href={{
+                    pathname: `/applicant/${applicant.id}`,
+                    query: { data: JSON.stringify(applicant) },
+                  }}
+                >
+                  <Button className="mt-4 w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white">
+                    View Profile
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>{applicant.name}</CardTitle>
               </CardHeader>
@@ -205,7 +251,7 @@ export default function JobDetail() {
                   </Link>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </animated.div>
         ))}
       </div>
