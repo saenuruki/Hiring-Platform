@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       {
         "title": "string",
         "description": "string",
-        "goals": "string",
+        "goals": ["string"],
         "skills": ["string"]
       }
     `

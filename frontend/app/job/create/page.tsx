@@ -41,14 +41,14 @@ export default function CreateJob() {
   const handlePDFUpload = (data: {
     title: string;
     description: string;
-    goals: string;
+    goals: string[];
     skills: string[];
   }) => {
     setFormData((prev) => ({
       ...prev,
       title: data.title || prev.title,
       description: data.description || prev.description,
-      goals: data.goals || prev.goals,
+      goals: data.goals.join(", ") || prev.goals,
       skills: data.skills.join(", ") || prev.skills,
     }));
     toast.success("PDF parsed successfully");
