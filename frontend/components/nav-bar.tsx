@@ -70,7 +70,7 @@ export default function NavBar() {
                   variant="outline"
                   className="border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-full"
                 >
-                  Create Job
+                  Create Task
                 </Button>
               </Link>
             </li>

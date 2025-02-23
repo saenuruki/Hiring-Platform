@@ -128,11 +128,11 @@ export default function JobDetail() {
   if (!task) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Job Not Found</h1>
-        <p>The job you're looking for doesn't exist or has been removed.</p>
+        <h1 className="text-3xl font-bold mb-6">Task Not Found</h1>
+        <p>The task you're looking for doesn't exist or has been removed.</p>
         <Link href="/jobs">
           <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white">
-            Back to Job Listings
+            Back to Task Listings
           </Button>
         </Link>
       </div>
@@ -259,7 +259,7 @@ export default function JobDetail() {
       <div className="mt-8">
         <Link href="/jobs">
           <Button className="mb-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full">
-            Back to Job Listings
+            Back to Task Listings
           </Button>
         </Link>
       </div>

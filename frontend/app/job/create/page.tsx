@@ -103,10 +103,10 @@ export default function CreateJob() {
   return (
     <div className="min-h-screen bg-white">
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Create New Job</h1>
+        <h1 className="text-3xl font-bold mb-6">Create New Task</h1>
         <Card>
           <CardHeader>
-            <CardTitle>Job Information</CardTitle>
+            <CardTitle>Task Information</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">

@@ -13,7 +13,7 @@ export default function About() {
               At NeuroGigX, we are a team of hackathon enthusiasts dedicated to
               redefining the future of work. Our diverse backgrounds in AI
               development, software engineering, and entrepreneurship drive us
-              to build a seamless, automated job marketplace powered by Solana
+              to build a seamless, automated task marketplace powered by Solana
             </p>
             <p className="text-lg text-gray-700">
               Our mission is to create an open and decentralized AI workforce,

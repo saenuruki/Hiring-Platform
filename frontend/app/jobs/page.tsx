@@ -33,7 +33,7 @@ export default function Tasks() {
 
   return (
     <main className="container mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Gig Listings</h1>
+      <h1 className="text-3xl font-bold mb-6">Task Listings</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tasks
           .sort((a: any, b: any) => b.account.createdAt - a.account.createdAt)
